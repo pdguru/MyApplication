@@ -1,13 +1,84 @@
 package pramod.fi.myapplication;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
+import android.content.Context;
+import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Vibrator;
+import android.util.Log;
 
-public class MainActivity extends AppCompatActivity {
+@SuppressWarnings("Deprecated")
+public class MainActivity extends Activity implements SensorEventListener{
+
+    SensorManager sensorManager;
+    float accX, accY, accZ;
+    float shake;
+    Vibrator vibrator;
+    Camera camera;
+    Parameters params;
+    boolean lightOn;
+    int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+        vibrator = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
+        camera = Camera.open();
+        lightOn = false;
+        count = 0;
+    }
+
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            accX = event.values[0];
+            accY = event.values[1];
+            accZ = event.values[2];
+
+            shake = (float) Math.sqrt((accX*accX)+(accY*accY)+(accZ*accZ));
+            Log.d("Shake",""+shake);
+
+            if(shake<10 || shake>11){
+                params = camera.getParameters();
+                if(!lightOn) {
+//                    vibrator.vibrate(100);
+                    params.setFlashMode(Parameters.FLASH_MODE_TORCH);
+                    lightOn=true;
+                }else{
+                    params.setFlashMode(Parameters.FLASH_MODE_OFF);
+                    lightOn=false;
+                }
+                camera.setParameters(params);
+                camera.startPreview();
+//                vibrator.vibrate(100);
+            }
+
+        }
+
+    }
+
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        params = camera.getParameters();
+        camera.stopPreview();
+        camera.release();
+        camera = null;
     }
 }
