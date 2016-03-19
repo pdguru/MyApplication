@@ -2,6 +2,7 @@ package pramod.fi.myapplication;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Sensor;
@@ -11,6 +12,8 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 @SuppressWarnings("Deprecated")
 public class MainActivity extends Activity implements SensorEventListener{
@@ -23,6 +26,8 @@ public class MainActivity extends Activity implements SensorEventListener{
     Parameters params;
     boolean lightOn;
     int count;
+    TextView textView;
+    RelativeLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,8 @@ public class MainActivity extends Activity implements SensorEventListener{
         camera = Camera.open();
         lightOn = false;
         count = 0;
+        textView = (TextView) findViewById(R.id.textview);
+        layout = (RelativeLayout) findViewById(R.id.layout);
     }
 
 
@@ -48,19 +55,25 @@ public class MainActivity extends Activity implements SensorEventListener{
             shake = (float) Math.sqrt((accX*accX)+(accY*accY)+(accZ*accZ));
             Log.d("Shake",""+shake);
 
-            if(shake<10 || shake>11){
+            if(shake>12){
                 params = camera.getParameters();
                 if(!lightOn) {
-//                    vibrator.vibrate(100);
+                    vibrator.vibrate(100);
                     params.setFlashMode(Parameters.FLASH_MODE_TORCH);
                     lightOn=true;
+                    textView.setText("Torch is on");
+                    textView.setTextColor(Color.BLACK);
+                    layout.setBackgroundColor(Color.WHITE);
                 }else{
                     params.setFlashMode(Parameters.FLASH_MODE_OFF);
                     lightOn=false;
+                    textView.setText("Torch is off");
+                    textView.setTextColor(Color.WHITE);
+                    layout.setBackgroundColor(Color.BLACK);
                 }
                 camera.setParameters(params);
                 camera.startPreview();
-//                vibrator.vibrate(100);
+                vibrator.vibrate(100);
             }
 
         }

@@ -3,11 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pramod.fi.myapplication.MainActivity">
-    
+    tools:context="pramod.fi.myapplication.MainActivity"
+    android:id="@+id/layout">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="App is active"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:layout_marginTop="25dp"
+        android:textSize="18dp"
+        android:id="@+id/textview"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"/>
 </RelativeLayout>
