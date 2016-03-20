@@ -9,7 +9,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="App is active"
+        android:text="Shake device to turn on/off the LED flash light"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         android:gravity="center"
         android:layout_marginTop="25dp"
         android:textSize="18dp"

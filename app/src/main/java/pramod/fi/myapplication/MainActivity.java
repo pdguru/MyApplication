@@ -1,7 +1,10 @@
 package pramod.fi.myapplication;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -42,6 +45,27 @@ public class MainActivity extends Activity implements SensorEventListener{
         count = 0;
         textView = (TextView) findViewById(R.id.textview);
         layout = (RelativeLayout) findViewById(R.id.layout);
+
+        if(!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)){
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle("Feature not found")
+                    .setMessage("Looks like your device does not have a LED flash light.")
+                    .setCancelable(false)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
+            dialog.create().show();
+
+        }
     }
 
 
@@ -55,7 +79,7 @@ public class MainActivity extends Activity implements SensorEventListener{
             shake = (float) Math.sqrt((accX*accX)+(accY*accY)+(accZ*accZ));
             Log.d("Shake",""+shake);
 
-            if(shake>12){
+            if(shake>13){
                 params = camera.getParameters();
                 if(!lightOn) {
                     vibrator.vibrate(100);
